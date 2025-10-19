@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import useWebSocket from "react-use-websocket";
 import "./App.css";
 
@@ -22,14 +22,30 @@ interface Coin {
 function App() {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>([]);
+  const [showConnectionError, setShowConnectionError] = useState(false);
+  const subscribedSymbolsRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    subscribedSymbolsRef.current = subscribedSymbols;
+  }, [subscribedSymbols]);
+
   const { sendMessage } = useWebSocket(
     `wss://ws.finnhub.io?token=${FINNHUB_API_KEY}`,
     {
       onOpen: () => {
         console.log("connected");
+        setShowConnectionError(false);
         subscribedSymbols.forEach((symbol) => {
           sendMessage(JSON.stringify({ type: "subscribe", symbol }));
         });
+      },
+      onClose: () => {
+        console.log("disconnected");
+        setShowConnectionError(true);
+      },
+      onError: (event) => {
+        console.error("WebSocket error observed:", event);
+        setShowConnectionError(true);
       },
       onMessage: (event) => {
         const message = JSON.parse(event.data);
@@ -68,7 +84,7 @@ function App() {
           }, 500);
         }
       },
-      shouldReconnect: (closeEvent) => true,
+      shouldReconnect: () => true,
     }
   );
 
@@ -90,7 +106,13 @@ function App() {
     };
 
     fetchData();
-  }, []);
+
+    return () => {
+      subscribedSymbolsRef.current.forEach((symbol) => {
+        sendMessage(JSON.stringify({ type: "unsubscribe", symbol }));
+      });
+    };
+  }, [sendMessage]);
 
   const handleSubscriptionToggle = (symbol: string) => {
     const finnhubSymbol = `BINANCE:${symbol.toUpperCase()}USDT`;
@@ -117,6 +139,11 @@ function App() {
 
   return (
     <div className="App">
+      {showConnectionError && (
+        <div className="error-banner">
+          WebSocket connection failed. Attempting to reconnect...
+        </div>
+      )}
       <table>
         <thead>
           <tr>

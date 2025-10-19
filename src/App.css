@@ -29,3 +29,15 @@ th {
 .col-value {
   width: 100px;
 }
+
+.error-banner {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
