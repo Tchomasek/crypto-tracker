@@ -10,6 +10,18 @@ td {
   padding: 8px;
 }
 
+tr {
+  transition: background-color 0.3s ease;
+}
+
 th {
   background-color: #f2f2f2;
+}
+
+.flash-green {
+  background-color: rgba(0, 255, 0, 0.5);
+}
+
+.flash-red {
+  background-color: rgba(255, 0, 0, 0.5);
 }
