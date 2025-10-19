@@ -16,17 +16,11 @@ interface Coin {
 
 function App() {
   const [coins, setCoins] = useState<Coin[]>([]);
-  const { sendMessage, lastMessage } = useWebSocket(
+  const { sendMessage, readyState } = useWebSocket(
     `wss://ws.finnhub.io?token=${finnhubApiKey}`,
     {
       onOpen: () => {
         console.log("connected");
-        sendMessage(
-          JSON.stringify({ type: "subscribe", symbol: "BINANCE:BTCUSDT" })
-        );
-        sendMessage(
-          JSON.stringify({ type: "subscribe", symbol: "BINANCE:ETHUSDT" })
-        );
       },
       onMessage: (event) => {
         console.log(event.data);
@@ -50,6 +44,19 @@ function App() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (coins.length > 0 && readyState === 1) {
+      coins.forEach((coin) => {
+        sendMessage(
+          JSON.stringify({
+            type: "subscribe",
+            symbol: `BINANCE:${coin.symbol.toUpperCase()}USDT`,
+          })
+        );
+      });
+    }
+  }, [coins, readyState, sendMessage]);
 
   return (
     <div className="App">
