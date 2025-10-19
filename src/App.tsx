@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import useWebSocket from "react-use-websocket";
 import "./App.css";
 
 const coingeckoApiKey = process.env.REACT_APP_COINGECKO_API_KEY;
+const finnhubApiKey = process.env.REACT_APP_FINNHUB_API_KEY;
 
 interface Coin {
   id: string;
@@ -14,6 +16,24 @@ interface Coin {
 
 function App() {
   const [coins, setCoins] = useState<Coin[]>([]);
+  const { sendMessage, lastMessage } = useWebSocket(
+    `wss://ws.finnhub.io?token=${finnhubApiKey}`,
+    {
+      onOpen: () => {
+        console.log("connected");
+        sendMessage(
+          JSON.stringify({ type: "subscribe", symbol: "BINANCE:BTCUSDT" })
+        );
+        sendMessage(
+          JSON.stringify({ type: "subscribe", symbol: "BINANCE:ETHUSDT" })
+        );
+      },
+      onMessage: (event) => {
+        console.log(event.data);
+      },
+      shouldReconnect: (closeEvent) => true,
+    }
+  );
 
   useEffect(() => {
     const fetchData = async () => {
