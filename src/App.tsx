@@ -106,6 +106,7 @@ function App() {
             <th>Symbol</th>
             <th>Name</th>
             <th>Value</th>
+            <th>24h % Change</th>
           </tr>
         </thead>
         <tbody>
@@ -127,6 +128,13 @@ function App() {
               <td>{coin.symbol}</td>
               <td>{coin.name}</td>
               <td>${coin.current_price.toLocaleString()}</td>
+              <td
+                style={{
+                  color: coin.price_change_percentage_24h > 0 ? "green" : "red",
+                }}
+              >
+                {coin.price_change_percentage_24h.toFixed(2)}%
+              </td>
             </tr>
           ))}
         </tbody>
