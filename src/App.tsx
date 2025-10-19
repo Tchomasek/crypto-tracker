@@ -1,24 +1,62 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+
+const coingeckoApiKey = process.env.REACT_APP_COINGECKO_API_KEY;
+
+interface Coin {
+  id: string;
+  market_cap_rank: number;
+  symbol: string;
+  name: string;
+  current_price: number;
+  image: string;
+}
 
 function App() {
+  const [coins, setCoins] = useState<Coin[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&x_cg_demo_api_key=${coingeckoApiKey}`
+        );
+        const data = await response.json();
+        setCoins(data);
+      } catch (error) {
+        console.error("Error fetching data from CoinGecko:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th></th>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {coins.map((coin) => (
+            <tr key={coin.id}>
+              <td>{coin.market_cap_rank}</td>
+              <td>
+                <img src={coin.image} alt={coin.name} width="30" />
+              </td>
+              <td>{coin.symbol}</td>
+              <td>{coin.name}</td>
+              <td>${coin.current_price.toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
