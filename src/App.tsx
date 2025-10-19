@@ -5,7 +5,8 @@ import "./App.css";
 const COINGECKO_API_KEY = process.env.REACT_APP_COINGECKO_API_KEY;
 const FINNHUB_API_KEY = process.env.REACT_APP_FINNHUB_API_KEY;
 
-const NUMBER_OF_COINS = 10;
+const NUMBER_OF_COINS = 100;
+const MAX_SUBSCRIPTIONS = 5;
 
 interface Coin {
   id: string;
@@ -20,11 +21,15 @@ interface Coin {
 
 function App() {
   const [coins, setCoins] = useState<Coin[]>([]);
+  const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>([]);
   const { sendMessage, readyState } = useWebSocket(
     `wss://ws.finnhub.io?token=${FINNHUB_API_KEY}`,
     {
       onOpen: () => {
         console.log("connected");
+        subscribedSymbols.forEach((symbol) => {
+          sendMessage(JSON.stringify({ type: "subscribe", symbol }));
+        });
       },
       onMessage: (event) => {
         const message = JSON.parse(event.data);
@@ -71,10 +76,14 @@ function App() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${NUMBER_OF_COINS}&page=1&sparkline=false&x_cg_demo_api_key=${COINGECKO_API_KEY}`
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&x_cg_demo_api_key=${COINGECKO_API_KEY}`
         );
         const data = await response.json();
         setCoins(data);
+        const top5Symbols = data
+          .slice(0, 5)
+          .map((coin: Coin) => `BINANCE:${coin.symbol.toUpperCase()}USDT`);
+        setSubscribedSymbols(top5Symbols);
       } catch (error) {
         console.error("Error fetching data from CoinGecko:", error);
       }
@@ -83,18 +92,24 @@ function App() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (coins.length > 0 && readyState === 1) {
-      coins.forEach((coin) => {
-        sendMessage(
-          JSON.stringify({
-            type: "subscribe",
-            symbol: `BINANCE:${coin.symbol.toUpperCase()}USDT`,
-          })
-        );
-      });
+
+
+  const handleSubscriptionToggle = (symbol: string) => {
+    const finnhubSymbol = `BINANCE:${symbol.toUpperCase()}USDT`;
+    const isSubscribed = subscribedSymbols.includes(finnhubSymbol);
+
+    if (isSubscribed) {
+      sendMessage(JSON.stringify({ type: "unsubscribe", symbol: finnhubSymbol }));
+      setSubscribedSymbols(subscribedSymbols.filter((s) => s !== finnhubSymbol));
+    } else {
+      if (subscribedSymbols.length >= 5) {
+        alert("You can only subscribe to a maximum of 5 symbols.");
+        return;
+      }
+      sendMessage(JSON.stringify({ type: "subscribe", symbol: finnhubSymbol }));
+      setSubscribedSymbols([...subscribedSymbols, finnhubSymbol]);
     }
-  }, [coins, readyState, sendMessage]);
+  };
 
   return (
     <div className="App">
@@ -107,6 +122,7 @@ function App() {
             <th>Name</th>
             <th>Value</th>
             <th>24h % Change</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -134,6 +150,13 @@ function App() {
                 }}
               >
                 {coin.price_change_percentage_24h.toFixed(2)}%
+              </td>
+              <td>
+                <button onClick={() => handleSubscriptionToggle(coin.symbol)}>
+                  {subscribedSymbols.includes(`BINANCE:${coin.symbol.toUpperCase()}USDT`)
+                    ? "Unsubscribe"
+                    : "Subscribe"}
+                </button>
               </td>
             </tr>
           ))}
