@@ -22,7 +22,7 @@ interface Coin {
 function App() {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>([]);
-  const { sendMessage, readyState } = useWebSocket(
+  const { sendMessage } = useWebSocket(
     `wss://ws.finnhub.io?token=${FINNHUB_API_KEY}`,
     {
       onOpen: () => {
@@ -65,7 +65,7 @@ function App() {
                   : coin
               )
             );
-          }, 1000);
+          }, 500);
         }
       },
       shouldReconnect: (closeEvent) => true,
@@ -76,14 +76,14 @@ function App() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&x_cg_demo_api_key=${COINGECKO_API_KEY}`
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${NUMBER_OF_COINS}&page=1&sparkline=false&x_cg_demo_api_key=${COINGECKO_API_KEY}`
         );
         const data = await response.json();
         setCoins(data);
-        const top5Symbols = data
-          .slice(0, 5)
+        const topSymbols = data
+          .slice(0, MAX_SUBSCRIPTIONS)
           .map((coin: Coin) => `BINANCE:${coin.symbol.toUpperCase()}USDT`);
-        setSubscribedSymbols(top5Symbols);
+        setSubscribedSymbols(topSymbols);
       } catch (error) {
         console.error("Error fetching data from CoinGecko:", error);
       }
@@ -92,18 +92,22 @@ function App() {
     fetchData();
   }, []);
 
-
-
   const handleSubscriptionToggle = (symbol: string) => {
     const finnhubSymbol = `BINANCE:${symbol.toUpperCase()}USDT`;
     const isSubscribed = subscribedSymbols.includes(finnhubSymbol);
 
     if (isSubscribed) {
-      sendMessage(JSON.stringify({ type: "unsubscribe", symbol: finnhubSymbol }));
-      setSubscribedSymbols(subscribedSymbols.filter((s) => s !== finnhubSymbol));
+      sendMessage(
+        JSON.stringify({ type: "unsubscribe", symbol: finnhubSymbol })
+      );
+      setSubscribedSymbols(
+        subscribedSymbols.filter((s) => s !== finnhubSymbol)
+      );
     } else {
-      if (subscribedSymbols.length >= 5) {
-        alert("You can only subscribe to a maximum of 5 symbols.");
+      if (subscribedSymbols.length >= MAX_SUBSCRIPTIONS) {
+        alert(
+          `You can only subscribe to a maximum of ${MAX_SUBSCRIPTIONS} symbols.`
+        );
         return;
       }
       sendMessage(JSON.stringify({ type: "subscribe", symbol: finnhubSymbol }));
@@ -120,7 +124,7 @@ function App() {
             <th></th>
             <th>Symbol</th>
             <th>Name</th>
-            <th>Value</th>
+            <th className="col-value">Value</th>
             <th>24h % Change</th>
             <th>Actions</th>
           </tr>
@@ -143,7 +147,9 @@ function App() {
               </td>
               <td>{coin.symbol}</td>
               <td>{coin.name}</td>
-              <td>${coin.current_price.toLocaleString()}</td>
+              <td className="col-value">
+                ${coin.current_price.toLocaleString()}
+              </td>
               <td
                 style={{
                   color: coin.price_change_percentage_24h > 0 ? "green" : "red",
@@ -153,7 +159,9 @@ function App() {
               </td>
               <td>
                 <button onClick={() => handleSubscriptionToggle(coin.symbol)}>
-                  {subscribedSymbols.includes(`BINANCE:${coin.symbol.toUpperCase()}USDT`)
+                  {subscribedSymbols.includes(
+                    `BINANCE:${coin.symbol.toUpperCase()}USDT`
+                  )
                     ? "Unsubscribe"
                     : "Subscribe"}
                 </button>

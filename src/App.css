@@ -11,7 +11,7 @@ td {
 }
 
 tr {
-  transition: background-color 0.3s ease;
+  transition: background-color 0.5s ease;
 }
 
 th {
@@ -24,4 +24,8 @@ th {
 
 .flash-red {
   background-color: rgba(255, 0, 0, 0.5);
+}
+
+.col-value {
+  width: 100px;
 }
