@@ -139,64 +139,84 @@ function App() {
 
   return (
     <div className="App">
+      <header className="App-header">
+        <h1>Crypto Tracker</h1>
+      </header>
       {showConnectionError && (
         <div className="error-banner">
           WebSocket connection failed. Attempting to reconnect...
         </div>
       )}
-      <table>
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th></th>
-            <th>Symbol</th>
-            <th>Name</th>
-            <th className="col-value">Value</th>
-            <th>24h % Change</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {coins.map((coin) => (
-            <tr
-              key={coin.id}
-              className={
-                coin.price_change_direction === "up"
-                  ? "flash-green"
-                  : coin.price_change_direction === "down"
-                  ? "flash-red"
-                  : ""
-              }
-            >
-              <td>{coin.market_cap_rank}</td>
-              <td>
-                <img src={coin.image} alt={coin.name} width="30" />
-              </td>
-              <td>{coin.symbol}</td>
-              <td>{coin.name}</td>
-              <td className="col-value">
-                ${coin.current_price.toLocaleString()}
-              </td>
-              <td
-                style={{
-                  color: coin.price_change_percentage_24h > 0 ? "green" : "red",
-                }}
-              >
-                {coin.price_change_percentage_24h.toFixed(2)}%
-              </td>
-              <td>
-                <button onClick={() => handleSubscriptionToggle(coin.symbol)}>
-                  {subscribedSymbols.includes(
-                    `BINANCE:${coin.symbol.toUpperCase()}USDT`
-                  )
-                    ? "Unsubscribe"
-                    : "Subscribe"}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <main>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th></th>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th className="col-value">Value</th>
+                <th>24h % Change</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {coins.map((coin) => (
+                <tr
+                  key={coin.id}
+                  className={
+                    coin.price_change_direction === "up"
+                      ? "flash-green"
+                      : coin.price_change_direction === "down"
+                      ? "flash-red"
+                      : ""
+                  }
+                >
+                  <td data-label="Rank">{coin.market_cap_rank}</td>
+                  <td data-label="Coin">
+                    <img src={coin.image} alt={coin.name} width="30" />
+                  </td>
+                  <td data-label="Symbol">{coin.symbol}</td>
+                  <td data-label="Name">{coin.name}</td>
+                  <td data-label="Value" className="col-value">
+                    ${coin.current_price.toLocaleString()}
+                  </td>
+                  <td
+                    data-label="24h % Change"
+                    style={{
+                      color:
+                        coin.price_change_percentage_24h > 0
+                          ? "var(--price-up)"
+                          : "var(--price-down)",
+                    }}
+                  >
+                    {coin.price_change_percentage_24h.toFixed(2)}%
+                  </td>
+                  <td data-label="Actions">
+                    <button
+                      onClick={() => handleSubscriptionToggle(coin.symbol)}
+                      className={
+                        subscribedSymbols.includes(
+                          `BINANCE:${coin.symbol.toUpperCase()}USDT`
+                        )
+                          ? "unsubscribe-btn"
+                          : "subscribe-btn"
+                      }
+                    >
+                      {subscribedSymbols.includes(
+                        `BINANCE:${coin.symbol.toUpperCase()}USDT`
+                      )
+                        ? "Unsubscribe"
+                        : "Subscribe"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </main>
     </div>
   );
 }

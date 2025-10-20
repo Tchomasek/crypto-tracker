@@ -1,43 +1,189 @@
+:root {
+  --background-color: #121212;
+  --surface-color: #1e1e1e;
+  --primary-text-color: #e0e0e0;
+  --secondary-text-color: #a0a0a0;
+  --border-color: #333;
+  --price-up: #4caf50;
+  --price-down: #f44336;
+  --accent-color: #2196f3;
+  --error-bg: #ff3d3d;
+  --error-text: #ffffff;
+}
+
+body {
+  margin: 0;
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
+}
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: var(--surface-color);
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--primary-text-color);
+}
+
+main {
+  padding: 0 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
 table {
-  width: 80%;
-  margin: 20px auto;
+  width: 100%;
   border-collapse: collapse;
+  min-width: 600px;
+  background-color: var(--surface-color);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th,
 td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  padding: 16px;
+  text-align: left;
 }
 
-tr {
-  transition: background-color 0.5s ease;
+thead tr {
+  background-color: #2a2a2a;
+  border-bottom: 2px solid var(--border-color);
 }
 
 th {
-  background-color: #f2f2f2;
+  font-weight: 700;
+  color: var(--secondary-text-color);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.5s ease-out;
+}
+
+tbody tr:last-child {
+  border-bottom: none;
 }
 
 .flash-green {
-  background-color: rgba(0, 255, 0, 0.5);
+  background-color: rgba(76, 175, 80, 0.3) !important;
 }
 
 .flash-red {
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: rgba(244, 67, 54, 0.3) !important;
 }
 
 .col-value {
-  width: 100px;
+  text-align: right;
+}
+
+td[data-label="Value"] {
+  font-weight: 500;
+}
+
+tbody tr:hover {
+  background-color: #2c2c2c;
+}
+
+td {
+  vertical-align: middle;
+}
+
+td img {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  color: white;
+}
+
+.subscribe-btn {
+  background-color: var(--accent-color);
+}
+
+.subscribe-btn:hover {
+  background-color: #1976d2;
+}
+
+.unsubscribe-btn {
+  background-color: #616161;
+}
+
+.unsubscribe-btn:hover {
+  background-color: #424242;
 }
 
 .error-banner {
-  background-color: #ff4d4d;
-  color: white;
-  padding: 10px;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  padding: 15px;
   text-align: center;
-  position: fixed;
+  font-weight: 500;
+  position: sticky;
   top: 0;
-  left: 0;
-  width: 100%;
   z-index: 1000;
+}
+
+@media screen and (max-width: 768px) {
+  table {
+    border: 0;
+    min-width: 100%;
+  }
+
+  table thead {
+    display: none;
+  }
+
+  table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+  }
+
+  table td {
+    display: flex;
+    justify-content: space-between;
+    text-align: right;
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--secondary-text-color);
+    font-size: 0.85rem;
+  }
+
+  .col-value {
+    text-align: right;
+  }
 }
