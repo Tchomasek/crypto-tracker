@@ -8,9 +8,26 @@ import {
 } from "../constants";
 import { Coin } from "../types";
 
+const getInitialSubscribedSymbols = (): string[] => {
+  const saved = sessionStorage.getItem("subscribedSymbols");
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    } catch (e) {
+      console.error("Failed to parse subscribedSymbols from sessionStorage", e);
+    }
+  }
+  return [];
+};
+
 export const useCryptoData = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
-  const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>([]);
+  const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>(
+    getInitialSubscribedSymbols
+  );
   const [showConnectionError, setShowConnectionError] = useState(false);
   const subscribedSymbolsRef = useRef<string[]>([]);
 
@@ -22,7 +39,7 @@ export const useCryptoData = () => {
     onOpen: () => {
       console.log("connected");
       setShowConnectionError(false);
-      subscribedSymbols.forEach((symbol) => {
+      subscribedSymbolsRef.current.forEach((symbol) => {
         sendMessage(JSON.stringify({ type: "subscribe", symbol }));
       });
     },
@@ -80,10 +97,12 @@ export const useCryptoData = () => {
         const response = await fetch(COINGECKO_API_URL);
         const data: Coin[] = await response.json();
         setCoins(data);
-        const topSymbols = data
-          .slice(0, MAX_SUBSCRIPTIONS)
-          .map((coin) => getFinnhubSymbol(coin.symbol));
-        setSubscribedSymbols(topSymbols);
+        if (subscribedSymbolsRef.current.length === 0) {
+          const topSymbols = data
+            .slice(0, MAX_SUBSCRIPTIONS)
+            .map((coin) => getFinnhubSymbol(coin.symbol));
+          setSubscribedSymbols(topSymbols);
+        }
       } catch (error) {
         console.error("Error fetching data from CoinGecko:", error);
       }
@@ -98,6 +117,13 @@ export const useCryptoData = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendMessage]);
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      "subscribedSymbols",
+      JSON.stringify(subscribedSymbols)
+    );
+  }, [subscribedSymbols]);
 
   return {
     coins,

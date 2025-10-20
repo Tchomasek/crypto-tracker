@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import "./App.css";
-import { SortKey, SortDirection } from "./types";
+import { SortKey, SortDirection, Coin } from "./types";
 import { useCryptoData } from "./hooks/useCryptoData";
 import { getFinnhubSymbol, MAX_SUBSCRIPTIONS } from "./constants";
 import { ConnectionErrorBanner } from "./components/ConnectionErrorBanner";
@@ -16,8 +16,20 @@ function App() {
     sendMessage,
   } = useCryptoData();
 
-  const [sortKey, setSortKey] = useState<SortKey>("market_cap_rank");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [sortKey, setSortKey] = useState<SortKey>(
+    () => (sessionStorage.getItem("sortKey") as SortKey) || "market_cap_rank"
+  );
+  const [sortDirection, setSortDirection] = useState<SortDirection>(
+    () => (sessionStorage.getItem("sortDirection") as SortDirection) || "asc"
+  );
+
+  useEffect(() => {
+    sessionStorage.setItem("sortKey", sortKey);
+  }, [sortKey]);
+
+  useEffect(() => {
+    sessionStorage.setItem("sortDirection", sortDirection);
+  }, [sortDirection]);
 
   const handleSubscriptionToggle = (symbol: string) => {
     const finnhubSymbol = getFinnhubSymbol(symbol);
@@ -58,8 +70,8 @@ function App() {
           return Number(bIsSubscribed) - Number(aIsSubscribed);
         }
       }
-      const aValue = a[sortKey];
-      const bValue = b[sortKey];
+      const aValue = a[sortKey as keyof Coin];
+      const bValue = b[sortKey as keyof Coin];
 
       if (typeof aValue === "number" && typeof bValue === "number") {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
