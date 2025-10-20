@@ -2,6 +2,7 @@ import React from "react";
 import { Coin, SortDirection, SortKey } from "../types";
 import { getFinnhubSymbol } from "../constants";
 
+import "./CoinTable.css";
 interface CoinTableProps {
   coins: Coin[];
   subscribedSymbols: string[];

@@ -1,0 +1,40 @@
+.sort-controls {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: var(--surface-color);
+  border-radius: 8px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.sort-controls label {
+  color: var(--secondary-text-color);
+  font-weight: 500;
+}
+
+.sort-controls select,
+.sort-controls .sort-direction-btn {
+  background-color: #2a2a2a;
+  color: var(--primary-text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.sort-controls select:focus,
+.sort-controls .sort-direction-btn:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+@media screen and (max-width: 768px) {
+  .sort-controls {
+    flex-wrap: wrap;
+  }
+}

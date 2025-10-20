@@ -1,5 +1,6 @@
 import React from "react";
 import { SortDirection, SortKey } from "../types";
+import "./SortControls.css";
 
 interface SortControlsProps {
   sortKey: SortKey;
