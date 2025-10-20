@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import useWebSocket from "react-use-websocket";
 import "./App.css";
 
@@ -19,10 +19,21 @@ interface Coin {
   price_change_direction?: "up" | "down" | "none";
 }
 
+type SortKey =
+  | "market_cap_rank"
+  | "name"
+  | "symbol"
+  | "current_price"
+  | "price_change_percentage_24h"
+  | "subscription";
+type SortDirection = "asc" | "desc";
+
 function App() {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>([]);
   const [showConnectionError, setShowConnectionError] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>("market_cap_rank");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const subscribedSymbolsRef = useRef<string[]>([]);
 
   useEffect(() => {
@@ -137,6 +148,60 @@ function App() {
     }
   };
 
+  const sortedCoins = useMemo(() => {
+    const sortableCoins = [...coins];
+    sortableCoins.sort((a, b) => {
+      if (sortKey === "subscription") {
+        const aIsSubscribed = subscribedSymbols.includes(
+          `BINANCE:${a.symbol.toUpperCase()}USDT`
+        );
+        const bIsSubscribed = subscribedSymbols.includes(
+          `BINANCE:${b.symbol.toUpperCase()}USDT`
+        );
+
+        if (sortDirection === "asc") {
+          return Number(aIsSubscribed) - Number(bIsSubscribed);
+        } else {
+          return Number(bIsSubscribed) - Number(aIsSubscribed);
+        }
+      }
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      return 0;
+    });
+    return sortableCoins;
+  }, [coins, sortKey, sortDirection, subscribedSymbols]);
+
+  const handleHeaderClick = (newSortKey: SortKey) => {
+    if (newSortKey === sortKey) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(newSortKey);
+      setSortDirection("asc");
+    }
+  };
+
+  const handleSortKeyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortKey(e.target.value as SortKey);
+  };
+
+  const toggleSortDirection = () => {
+    setSortDirection((prevDirection) =>
+      prevDirection === "asc" ? "desc" : "asc"
+    );
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -148,21 +213,111 @@ function App() {
         </div>
       )}
       <main>
+        <div className="sort-controls">
+          <label htmlFor="sort-select">Sort by:</label>
+          <select
+            id="sort-select"
+            value={sortKey}
+            onChange={handleSortKeyChange}
+          >
+            <option value="market_cap_rank">Rank</option>
+            <option value="name">Name</option>
+            <option value="symbol">Symbol</option>
+            <option value="current_price">Value</option>
+            <option value="price_change_percentage_24h">24h % Change</option>
+            <option value="subscription">Subscription</option>
+          </select>
+          <button onClick={toggleSortDirection} className="sort-direction-btn">
+            {sortDirection === "asc" ? "↑ Asc" : "↓ Desc"}
+          </button>
+        </div>
+
         <div className="table-container">
           <table>
             <thead>
               <tr>
-                <th>Rank</th>
+                <th
+                  className="sortable-header"
+                  onClick={() => handleHeaderClick("market_cap_rank")}
+                >
+                  Rank
+                  <span
+                    className="sort-arrow"
+                    style={{ opacity: sortKey === "market_cap_rank" ? 1 : 0 }}
+                  >
+                    {sortDirection === "asc" ? "↑" : "↓"}
+                  </span>
+                </th>
                 <th></th>
-                <th>Symbol</th>
-                <th>Name</th>
-                <th className="col-value">Value</th>
-                <th>24h % Change</th>
-                <th>Actions</th>
+                <th
+                  className="sortable-header"
+                  onClick={() => handleHeaderClick("symbol")}
+                >
+                  Symbol
+                  <span
+                    className="sort-arrow"
+                    style={{ opacity: sortKey === "symbol" ? 1 : 0 }}
+                  >
+                    {sortDirection === "asc" ? "↑" : "↓"}
+                  </span>
+                </th>
+                <th
+                  className="sortable-header"
+                  onClick={() => handleHeaderClick("name")}
+                >
+                  Name
+                  <span
+                    className="sort-arrow"
+                    style={{ opacity: sortKey === "name" ? 1 : 0 }}
+                  >
+                    {sortDirection === "asc" ? "↑" : "↓"}
+                  </span>
+                </th>
+                <th
+                  className="col-value sortable-header"
+                  onClick={() => handleHeaderClick("current_price")}
+                >
+                  Value
+                  <span
+                    className="sort-arrow"
+                    style={{ opacity: sortKey === "current_price" ? 1 : 0 }}
+                  >
+                    {sortDirection === "asc" ? "↑" : "↓"}
+                  </span>
+                </th>
+                <th
+                  className="sortable-header"
+                  onClick={() =>
+                    handleHeaderClick("price_change_percentage_24h")
+                  }
+                >
+                  24h % Change
+                  <span
+                    className="sort-arrow"
+                    style={{
+                      opacity:
+                        sortKey === "price_change_percentage_24h" ? 1 : 0,
+                    }}
+                  >
+                    {sortDirection === "asc" ? "↑" : "↓"}
+                  </span>
+                </th>
+                <th
+                  className="sortable-header"
+                  onClick={() => handleHeaderClick("subscription")}
+                >
+                  Actions
+                  <span
+                    className="sort-arrow"
+                    style={{ opacity: sortKey === "subscription" ? 1 : 0 }}
+                  >
+                    {sortDirection === "asc" ? "↑" : "↓"}
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
-              {coins.map((coin) => (
+              {sortedCoins.map((coin) => (
                 <tr
                   key={coin.id}
                   className={
