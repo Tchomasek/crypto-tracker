@@ -16,12 +16,8 @@ function App() {
     sendMessage,
   } = useCryptoData();
 
-  const [sortKey, setSortKey] = useState<SortKey>(
-    () => (sessionStorage.getItem("sortKey") as SortKey) || "market_cap_rank"
-  );
-  const [sortDirection, setSortDirection] = useState<SortDirection>(
-    () => (sessionStorage.getItem("sortDirection") as SortDirection) || "asc"
-  );
+  const [sortKey, setSortKey] = useState<SortKey>("market_cap_rank");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
   useEffect(() => {
     sessionStorage.setItem("sortKey", sortKey);
