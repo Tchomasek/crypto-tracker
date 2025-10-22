@@ -18,6 +18,7 @@ function App() {
 
   const [sortKey, setSortKey] = useState<SortKey>("market_cap_rank");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [filterValue, setFilterValue] = useState("");
 
   useEffect(() => {
     sessionStorage.setItem("sortKey", sortKey);
@@ -51,7 +52,13 @@ function App() {
   };
 
   const sortedCoins = useMemo(() => {
-    return [...coins].sort((a, b) => {
+    const filteredCoins = coins.filter(
+      (coin) =>
+        coin.name.toLowerCase().includes(filterValue.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(filterValue.toLowerCase())
+    );
+
+    return [...filteredCoins].sort((a, b) => {
       if (sortKey === "subscription") {
         const aIsSubscribed = subscribedSymbols.includes(
           getFinnhubSymbol(a.symbol)
@@ -81,7 +88,7 @@ function App() {
 
       return 0;
     });
-  }, [coins, sortKey, sortDirection, subscribedSymbols]);
+  }, [coins, sortKey, sortDirection, subscribedSymbols, filterValue]);
 
   const handleHeaderClick = (newSortKey: SortKey) => {
     if (newSortKey === sortKey) {
@@ -100,6 +107,14 @@ function App() {
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterValue(e.target.value);
+  };
+
+  const handleClearFilter = () => {
+    setFilterValue("");
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -112,6 +127,9 @@ function App() {
           sortDirection={sortDirection}
           onSortKeyChange={handleSortKeyChange}
           onSortDirectionToggle={handleSortDirectionToggle}
+          filterValue={filterValue}
+          onFilterChange={handleFilterChange}
+          onClearFilter={handleClearFilter}
         />
         <CoinTable
           coins={sortedCoins}

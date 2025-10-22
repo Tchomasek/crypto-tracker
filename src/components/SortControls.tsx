@@ -7,6 +7,9 @@ interface SortControlsProps {
   sortDirection: SortDirection;
   onSortKeyChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onSortDirectionToggle: () => void;
+  filterValue: string;
+  onFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClearFilter: () => void;
 }
 
 export const SortControls: React.FC<SortControlsProps> = ({
@@ -14,6 +17,9 @@ export const SortControls: React.FC<SortControlsProps> = ({
   sortDirection,
   onSortKeyChange,
   onSortDirectionToggle,
+  filterValue,
+  onFilterChange,
+  onClearFilter,
 }) => {
   return (
     <div className="sort-controls">
@@ -29,6 +35,20 @@ export const SortControls: React.FC<SortControlsProps> = ({
       <button onClick={onSortDirectionToggle} className="sort-direction-btn">
         {sortDirection === "asc" ? "↑ Asc" : "↓ Desc"}
       </button>
+
+      <label htmlFor="filter-input">Filter:</label>
+      <input
+        id="filter-input"
+        type="text"
+        value={filterValue}
+        onChange={onFilterChange}
+        placeholder="Filter by name or symbol"
+      />
+      {filterValue && (
+        <button onClick={onClearFilter} className="clear-filter-btn">
+          &times;
+        </button>
+      )}
     </div>
   );
 };
