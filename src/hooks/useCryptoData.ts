@@ -25,9 +25,7 @@ const getInitialSubscribedSymbols = (): string[] => {
 
 export const useCryptoData = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
-  const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>(
-    getInitialSubscribedSymbols
-  );
+  const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>(getInitialSubscribedSymbols());
   const [showConnectionError, setShowConnectionError] = useState(false);
   const subscribedSymbolsRef = useRef<string[]>([]);
 
@@ -39,9 +37,12 @@ export const useCryptoData = () => {
     onOpen: () => {
       console.log("connected");
       setShowConnectionError(false);
-      subscribedSymbolsRef.current.forEach((symbol) => {
-        sendMessage(JSON.stringify({ type: "subscribe", symbol }));
-      });
+      // loading subscribed symbols from localStorage causes timing issue, so this delays subscription slightly to fix it
+      setTimeout(()=>{
+        subscribedSymbolsRef.current.forEach((symbol) => {
+          sendMessage(JSON.stringify({ type: "subscribe", symbol }));
+        });
+      })
     },
     onClose: () => {
       console.log("disconnected");
