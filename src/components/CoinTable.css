@@ -62,6 +62,7 @@ tbody tr:last-child {
 }
 
 .col-value {
+  width: 150px;
   text-align: right;
 }
 
