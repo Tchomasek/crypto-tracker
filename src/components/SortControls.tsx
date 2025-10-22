@@ -21,6 +21,11 @@ export const SortControls: React.FC<SortControlsProps> = ({
   onFilterChange,
   onClearFilter,
 }) => {
+  const input = React.useRef<HTMLInputElement>(null);
+  const handleClearInput = () => {
+    onClearFilter();
+    input.current?.focus();
+  };
   return (
     <div className="sort-controls">
       <label htmlFor="sort-select">Sort by:</label>
@@ -43,9 +48,10 @@ export const SortControls: React.FC<SortControlsProps> = ({
         value={filterValue}
         onChange={onFilterChange}
         placeholder="Filter by name or symbol"
+        ref={input}
       />
       {filterValue && (
-        <button onClick={onClearFilter} className="clear-filter-btn">
+        <button onClick={handleClearInput} className="clear-filter-btn">
           &times;
         </button>
       )}
