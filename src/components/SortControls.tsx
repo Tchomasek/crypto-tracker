@@ -41,15 +41,18 @@ export const SortControls: React.FC<SortControlsProps> = ({
         {sortDirection === "asc" ? "↑ Asc" : "↓ Desc"}
       </button>
 
-      <label htmlFor="filter-input">Filter:</label>
-      <input
-        id="filter-input"
-        type="text"
-        value={filterValue}
-        onChange={onFilterChange}
-        placeholder="Filter by name or symbol"
-        ref={input}
-      />
+      <div>
+        <label htmlFor="filter-input">Filter:</label>
+        <input
+          id="filter-input"
+          type="text"
+          value={filterValue}
+          onChange={onFilterChange}
+          placeholder="Filter by name or symbol"
+          ref={input}
+          className="filter-input"
+        />
+      </div>
       {filterValue && (
         <button onClick={handleClearInput} className="clear-filter-btn">
           &times;
