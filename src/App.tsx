@@ -15,6 +15,8 @@ function App() {
     setSubscribedSymbols,
     showConnectionError,
     sendMessage,
+    isLoading,
+    error,
   } = useCryptoData();
 
   const [sortKey, setSortKey] = useState<SortKey>("market_cap_rank");
@@ -123,23 +125,31 @@ function App() {
       </header>
       {showConnectionError && <ConnectionErrorBanner />}
       <main>
-        <SortControls
-          sortKey={sortKey}
-          sortDirection={sortDirection}
-          onSortKeyChange={handleSortKeyChange}
-          onSortDirectionToggle={handleSortDirectionToggle}
-          filterValue={filterValue}
-          onFilterChange={handleFilterChange}
-          onClearFilter={handleClearFilter}
-        />
-        <CoinTable
-          coins={sortedCoins}
-          subscribedSymbols={subscribedSymbols}
-          sortKey={sortKey}
-          sortDirection={sortDirection}
-          onHeaderClick={handleHeaderClick}
-          onSubscriptionToggle={handleSubscriptionToggle}
-        />
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div className="error-banner">{error}</div>
+        ) : (
+          <>
+            <SortControls
+              sortKey={sortKey}
+              sortDirection={sortDirection}
+              onSortKeyChange={handleSortKeyChange}
+              onSortDirectionToggle={handleSortDirectionToggle}
+              filterValue={filterValue}
+              onFilterChange={handleFilterChange}
+              onClearFilter={handleClearFilter}
+            />
+            <CoinTable
+              coins={sortedCoins}
+              subscribedSymbols={subscribedSymbols}
+              sortKey={sortKey}
+              sortDirection={sortDirection}
+              onHeaderClick={handleHeaderClick}
+              onSubscriptionToggle={handleSubscriptionToggle}
+            />
+          </>
+        )}
       </main>
       <Footer />
     </div>

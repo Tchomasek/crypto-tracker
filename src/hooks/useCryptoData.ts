@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import useWebSocket from "react-use-websocket";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 import {
   COINGECKO_API_URL,
   FINNHUB_WS_URL,
@@ -25,24 +25,22 @@ const getInitialSubscribedSymbols = (): string[] => {
 
 export const useCryptoData = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
-  const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>(getInitialSubscribedSymbols());
+  const [subscribedSymbols, setSubscribedSymbols] = useState<string[]>(
+    getInitialSubscribedSymbols()
+  );
   const [showConnectionError, setShowConnectionError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const subscribedSymbolsRef = useRef<string[]>([]);
 
   useEffect(() => {
     subscribedSymbolsRef.current = subscribedSymbols;
   }, [subscribedSymbols]);
 
-  const { sendMessage } = useWebSocket(FINNHUB_WS_URL, {
+  const { sendMessage, readyState } = useWebSocket(FINNHUB_WS_URL, {
     onOpen: () => {
       console.log("connected");
       setShowConnectionError(false);
-      // loading subscribed symbols from localStorage causes timing issue, so this delays subscription slightly to fix it
-      setTimeout(()=>{
-        subscribedSymbolsRef.current.forEach((symbol) => {
-          sendMessage(JSON.stringify({ type: "subscribe", symbol }));
-        });
-      })
     },
     onClose: () => {
       console.log("disconnected");
@@ -78,7 +76,7 @@ export const useCryptoData = () => {
           return Array.from(coinsMap.values());
         });
 
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           setCoins((prevCoins) =>
             prevCoins.map((coin) =>
               coin.price_change_direction
@@ -87,15 +85,29 @@ export const useCryptoData = () => {
             )
           );
         }, 500);
+        return () => clearTimeout(timeoutId);
       }
     },
     shouldReconnect: () => true,
   });
 
   useEffect(() => {
+    if (readyState === ReadyState.OPEN && !isLoading) {
+      subscribedSymbolsRef.current.forEach((symbol) => {
+        sendMessage(JSON.stringify({ type: "subscribe", symbol }));
+      });
+    }
+  }, [readyState, isLoading, sendMessage]);
+
+  useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
         const response = await fetch(COINGECKO_API_URL);
+        if (!response.ok) {
+          throw new Error("Failed to fetch data from CoinGecko");
+        }
         const data: Coin[] = await response.json();
         const sortedData = [...data].sort(
           (a, b) => b.current_price - a.current_price
@@ -111,17 +123,22 @@ export const useCryptoData = () => {
             .map((coin) => getFinnhubSymbol(coin.symbol));
           setSubscribedSymbols(topSymbols);
         }
-      } catch (error) {
+      } catch (error: any) {
+        setError(error.message);
         console.error("Error fetching data from CoinGecko:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
 
     return () => {
-      subscribedSymbolsRef.current.forEach((symbol) => {
-        sendMessage(JSON.stringify({ type: "unsubscribe", symbol }));
-      });
+      if (readyState === ReadyState.OPEN) {
+        subscribedSymbolsRef.current.forEach((symbol) => {
+          sendMessage(JSON.stringify({ type: "unsubscribe", symbol }));
+        });
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendMessage]);
@@ -139,5 +156,7 @@ export const useCryptoData = () => {
     setSubscribedSymbols,
     showConnectionError,
     sendMessage,
+    isLoading,
+    error,
   };
 };
