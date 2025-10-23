@@ -52,42 +52,46 @@ export const useCryptoData = () => {
     },
     onMessage: (event) => {
       const message = JSON.parse(event.data);
-      if (message.type === "trade" && message.data) {
-        setCoins((prevCoins) => {
-          const coinsMap = new Map(
-            prevCoins.map((coin) => [coin.symbol.toLowerCase(), coin])
-          );
-          message.data.forEach((trade: any) => {
-            const symbol = trade.s
-              .split(":")[1]
-              .replace("USDT", "")
-              .toLowerCase();
-            const existingCoin = coinsMap.get(symbol);
-            if (existingCoin && existingCoin.current_price !== trade.p) {
-              const direction =
-                trade.p > existingCoin.current_price ? "up" : "down";
-              coinsMap.set(symbol, {
-                ...existingCoin,
-                current_price: trade.p,
-                price_change_direction: direction,
-              });
-            }
+      try {
+        if (message.type === "trade" && message.data) {           
+          setCoins((prevCoins) => {
+            const coinsMap = new Map(
+              prevCoins.map((coin) => [coin.symbol.toLowerCase(), coin])
+            );
+            message.data.forEach((trade: any) => {
+              const symbol = trade.s
+                .split(":")[1]
+                .replace("USDT", "")
+                .toLowerCase();
+              const existingCoin = coinsMap.get(symbol);
+              if (existingCoin && existingCoin.current_price !== trade.p) {
+                const direction =
+                  trade.p > existingCoin.current_price ? "up" : "down";
+                coinsMap.set(symbol, {
+                  ...existingCoin,
+                  current_price: trade.p,
+                  price_change_direction: direction,
+                });
+              }
+            });
+            return Array.from(coinsMap.values());
           });
-          return Array.from(coinsMap.values());
-        });
 
-        const timeoutId = setTimeout(() => {
-          setCoins((prevCoins) =>
-            prevCoins.map((coin) =>
-              coin.price_change_direction
-                ? { ...coin, price_change_direction: "none" }
-                : coin
-            )
-          );
-        }, 500);
-        return () => clearTimeout(timeoutId);
+          const timeoutId = setTimeout(() => {
+            setCoins((prevCoins): Coin[] =>
+              prevCoins.map((coin) =>
+                coin.price_change_direction
+                  ? { ...coin, price_change_direction: "none" }
+                  : coin
+              )
+            );
+          }, 500);
+          return () => clearTimeout(timeoutId);
+        }
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
       }
-    },
+  },
     shouldReconnect: () => true,
   });
 
