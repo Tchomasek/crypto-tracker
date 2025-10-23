@@ -115,10 +115,6 @@ function App() {
     setFilterValue(filterValue);
   };
 
-  const handleClearFilter = () => {
-    setFilterValue("");
-  };
-
   return (
     <div className="App">
       <header className="App-header">
@@ -139,7 +135,6 @@ function App() {
               onSortDirectionToggle={handleSortDirectionToggle}
               filterValue={filterValue}
               onFilterChange={handleFilterChange}
-              onClearFilter={handleClearFilter}
             />
             <CoinTable
               coins={sortedCoins}

@@ -9,7 +9,6 @@ interface SortControlsProps {
   onSortDirectionToggle: () => void;
   filterValue: string;
   onFilterChange: (filterValue: string) => void;
-  onClearFilter: () => void;
 }
 
 export const SortControls: React.FC<SortControlsProps> = ({
@@ -19,7 +18,6 @@ export const SortControls: React.FC<SortControlsProps> = ({
   onSortDirectionToggle,
   filterValue,
   onFilterChange,
-  onClearFilter,
 }) => {
   const input = React.useRef<HTMLInputElement>(null);
   const [tempFilterValue, setTempFilterValue] = React.useState(filterValue);
