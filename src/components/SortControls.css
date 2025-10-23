@@ -46,6 +46,10 @@
   outline-offset: 2px;
 }
 
+.filter-input {
+  margin-left: 8px;
+}
+
 @media screen and (max-width: 768px) {
   .sort-controls {
     flex-wrap: wrap;

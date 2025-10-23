@@ -36,12 +36,9 @@ th {
 }
 
 .sort-arrow {
-  /* Reserve space and control visibility to prevent UI jumping */
   display: inline-block;
   width: 1em;
-  text-align: left;
-  opacity: 0; /* Hidden by default */
-  transition: opacity 0.2s ease-in-out;
+  text-align: right;
 }
 
 tbody tr {
@@ -109,7 +106,6 @@ button {
   background-color: #424242;
 }
 
-/* Responsive Styles */
 @media screen and (max-width: 768px) {
   table {
     border: 0;
