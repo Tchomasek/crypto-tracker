@@ -6,6 +6,7 @@ import { getFinnhubSymbol, MAX_SUBSCRIPTIONS } from "./constants";
 import { ConnectionErrorBanner } from "./components/ConnectionErrorBanner";
 import { SortControls } from "./components/SortControls";
 import { CoinTable } from "./components/CoinTable";
+import Footer from "./components/Footer";
 
 function App() {
   const {
@@ -140,6 +141,7 @@ function App() {
           onSubscriptionToggle={handleSubscriptionToggle}
         />
       </main>
+      <Footer />
     </div>
   );
 }
