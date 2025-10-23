@@ -109,16 +109,9 @@ export const useCryptoData = () => {
           throw new Error("Failed to fetch data from CoinGecko");
         }
         const data: Coin[] = await response.json();
-        const sortedData = [...data].sort(
-          (a, b) => b.current_price - a.current_price
-        );
-        const rankedData = sortedData.map((coin, index) => ({
-          ...coin,
-          market_cap_rank: index + 1,
-        }));
-        setCoins(rankedData);
+        setCoins(data);
         if (subscribedSymbolsRef.current.length === 0) {
-          const topSymbols = rankedData
+          const topSymbols = data
             .slice(0, MAX_SUBSCRIPTIONS)
             .map((coin) => getFinnhubSymbol(coin.symbol));
           setSubscribedSymbols(topSymbols);
