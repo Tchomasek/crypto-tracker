@@ -8,7 +8,7 @@ interface SortControlsProps {
   onSortKeyChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onSortDirectionToggle: () => void;
   filterValue: string;
-  onFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFilterChange: (filterValue: string) => void;
   onClearFilter: () => void;
 }
 
@@ -22,10 +22,25 @@ export const SortControls: React.FC<SortControlsProps> = ({
   onClearFilter,
 }) => {
   const input = React.useRef<HTMLInputElement>(null);
-  const handleClearInput = () => {
-    onClearFilter();
-    input.current?.focus();
+  const [tempFilterValue, setTempFilterValue] = React.useState(filterValue);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTempFilterValue(e.target.value);
   };
+
+  const handleConfirmFilter = () => {
+    onFilterChange(tempFilterValue);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleConfirmFilter();
+    }
+  };
+
+  React.useEffect(() => {
+    setTempFilterValue(filterValue);
+  }, [filterValue]);
   return (
     <div className="sort-controls">
       <label htmlFor="sort-select">Sort by:</label>
@@ -41,23 +56,22 @@ export const SortControls: React.FC<SortControlsProps> = ({
         {sortDirection === "asc" ? "↑ Asc" : "↓ Desc"}
       </button>
 
-      <div>
+      <div className="filter-container">
         <label htmlFor="filter-input">Filter:</label>
         <input
           id="filter-input"
           type="text"
-          value={filterValue}
-          onChange={onFilterChange}
+          value={tempFilterValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           placeholder="Filter by name or symbol"
           ref={input}
           className="filter-input"
         />
-      </div>
-      {filterValue && (
-        <button onClick={handleClearInput} className="clear-filter-btn">
-          &times;
+        <button onClick={handleConfirmFilter} className="confirm-filter-btn">
+          Filter
         </button>
-      )}
+      </div>
     </div>
   );
 };

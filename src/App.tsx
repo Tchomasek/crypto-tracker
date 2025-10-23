@@ -111,8 +111,8 @@ function App() {
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterValue(e.target.value);
+  const handleFilterChange = (filterValue: string) => {
+    setFilterValue(filterValue);
   };
 
   const handleClearFilter = () => {

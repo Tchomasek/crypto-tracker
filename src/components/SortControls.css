@@ -2,7 +2,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 20px;
   padding: 10px;
   background-color: var(--surface-color);
@@ -18,7 +18,7 @@
 
 .sort-controls select,
 .sort-controls .sort-direction-btn,
-.sort-controls .clear-filter-btn,
+.sort-controls .confirm-filter-btn,
 .sort-controls input[type="text"] {
   background-color: #2a2a2a;
   color: var(--primary-text-color);
@@ -30,17 +30,13 @@
 
 .sort-controls select,
 .sort-controls .sort-direction-btn,
-.sort-controls .clear-filter-btn {
+.sort-controls .confirm-filter-btn {
   cursor: pointer;
-}
-
-.sort-controls .clear-filter-btn {
-    line-height: 1;
 }
 
 .sort-controls select:focus,
 .sort-controls .sort-direction-btn:focus,
-.sort-controls .clear-filter-btn:focus,
+.sort-controls .confirm-filter-btn:focus,
 .sort-controls input[type="text"]:focus {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
@@ -53,6 +49,12 @@
 .sort-direction-btn {
   width: 70px;
   text-align: center;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 @media screen and (max-width: 768px) {
