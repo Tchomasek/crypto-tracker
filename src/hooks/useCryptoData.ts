@@ -8,6 +8,8 @@ import {
 } from "../constants";
 import { Coin } from "../types";
 
+const FLASH_DURATION = 500;
+
 const getInitialSubscribedSymbols = (): string[] => {
   const saved = sessionStorage.getItem("subscribedSymbols");
   if (saved) {
@@ -91,7 +93,7 @@ export const useCryptoData = () => {
               )
             );
             flashTimeoutRef.current = null;
-          }, 500);
+          }, FLASH_DURATION);
         }
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
