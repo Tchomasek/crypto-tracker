@@ -35,7 +35,9 @@ export const CoinTable: React.FC<CoinTableProps> = ({
               Rank
               <span
                 className="sort-arrow"
-                style={{ opacity: sortKey === "market_cap_rank" ? 1 : 0 }}
+                style={{
+                  visibility: sortKey === "market_cap_rank" ? "visible" : "hidden",
+                }}
               >
                 {sortDirection === "asc" ? "↑" : "↓"}
               </span>
@@ -48,7 +50,7 @@ export const CoinTable: React.FC<CoinTableProps> = ({
               Symbol
               <span
                 className="sort-arrow"
-                style={{ opacity: sortKey === "symbol" ? 1 : 0 }}
+                style={{ visibility: sortKey === "symbol" ? "visible" : "hidden" }}
               >
                 {sortDirection === "asc" ? "↑" : "↓"}
               </span>
@@ -60,7 +62,7 @@ export const CoinTable: React.FC<CoinTableProps> = ({
               Name
               <span
                 className="sort-arrow"
-                style={{ opacity: sortKey === "name" ? 1 : 0 }}
+                style={{ visibility: sortKey === "name" ? "visible" : "hidden" }}
               >
                 {sortDirection === "asc" ? "↑" : "↓"}
               </span>
@@ -72,7 +74,7 @@ export const CoinTable: React.FC<CoinTableProps> = ({
               Value
               <span
                 className="sort-arrow"
-                style={{ opacity: sortKey === "current_price" ? 1 : 0 }}
+                style={{ visibility: sortKey === "current_price" ? "visible" : "hidden" }}
               >
                 {sortDirection === "asc" ? "↑" : "↓"}
               </span>
@@ -85,7 +87,8 @@ export const CoinTable: React.FC<CoinTableProps> = ({
               <span
                 className="sort-arrow"
                 style={{
-                  opacity: sortKey === "price_change_percentage_24h" ? 1 : 0,
+                  visibility:
+                    sortKey === "price_change_percentage_24h" ? "visible" : "hidden",
                 }}
               >
                 {sortDirection === "asc" ? "↑" : "↓"}
@@ -98,7 +101,7 @@ export const CoinTable: React.FC<CoinTableProps> = ({
               Actions
               <span
                 className="sort-arrow"
-                style={{ opacity: sortKey === "subscription" ? 1 : 0 }}
+                style={{ visibility: sortKey === "subscription" ? "visible" : "hidden" }}
               >
                 {sortDirection === "asc" ? "↑" : "↓"}
               </span>
