@@ -34,10 +34,10 @@
   cursor: pointer;
 }
 
-.sort-controls select:focus,
-.sort-controls .sort-direction-btn:focus,
-.sort-controls .confirm-filter-btn:focus,
-.sort-controls input[type="text"]:focus {
+.sort-controls select:focus-visible,
+.sort-controls .sort-direction-btn:focus-visible,
+.sort-controls .confirm-filter-btn:focus-visible,
+.sort-controls input[type="text"]:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
@@ -47,7 +47,7 @@
 }
 
 .sort-direction-btn {
-  width: 70px;
+  width: 80px;
   text-align: center;
 }
 
