@@ -32,6 +32,7 @@ export const useCryptoData = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const subscribedSymbolsRef = useRef<string[]>([]);
+  const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     subscribedSymbolsRef.current = subscribedSymbols;
@@ -51,8 +52,8 @@ export const useCryptoData = () => {
       setShowConnectionError(true);
     },
     onMessage: (event) => {
-      const message = JSON.parse(event.data);
       try {
+        const message = JSON.parse(event.data);
         if (message.type === "trade" && message.data) {           
           setCoins((prevCoins) => {
             const coinsMap = new Map(
@@ -77,7 +78,11 @@ export const useCryptoData = () => {
             return Array.from(coinsMap.values());
           });
 
-          const timeoutId = setTimeout(() => {
+          if (flashTimeoutRef.current) {
+            clearTimeout(flashTimeoutRef.current);
+          }
+
+          flashTimeoutRef.current = setTimeout(() => {
             setCoins((prevCoins): Coin[] =>
               prevCoins.map((coin) =>
                 coin.price_change_direction
@@ -85,13 +90,13 @@ export const useCryptoData = () => {
                   : coin
               )
             );
+            flashTimeoutRef.current = null;
           }, 500);
-          return () => clearTimeout(timeoutId);
         }
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
       }
-  },
+    },
     shouldReconnect: () => true,
   });
 
@@ -146,6 +151,15 @@ export const useCryptoData = () => {
       JSON.stringify(subscribedSymbols)
     );
   }, [subscribedSymbols]);
+
+  // Cleanup flash timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (flashTimeoutRef.current) {
+        clearTimeout(flashTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return {
     coins,
