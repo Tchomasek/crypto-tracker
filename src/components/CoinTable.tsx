@@ -115,8 +115,8 @@ export const CoinTable: React.FC<CoinTableProps> = ({
                       : "subscribe-btn"
                   }
                   aria-label={
-                    isSubscribed(coin.symbol) 
-                      ? `Unsubscribe from ${coin.name} real-time price updates` 
+                    isSubscribed(coin.symbol)
+                      ? `Unsubscribe from ${coin.name} real-time price updates`
                       : `Subscribe to ${coin.name} real-time price updates`
                   }
                 >

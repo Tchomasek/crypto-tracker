@@ -56,7 +56,7 @@ export const useCryptoData = () => {
     onMessage: (event) => {
       try {
         const message = JSON.parse(event.data);
-        if (message.type === "trade" && message.data) {           
+        if (message.type === "trade" && message.data) {
           setCoins((prevCoins) => {
             const coinsMap = new Map(
               prevCoins.map((coin) => [coin.symbol.toLowerCase(), coin])

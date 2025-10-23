@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 import { SortDirection, SortKey } from "../types";
 import "./SortControls.css";
 
@@ -19,8 +19,8 @@ export const SortControls: React.FC<SortControlsProps> = ({
   filterValue,
   onFilterChange,
 }) => {
-  const input = React.useRef<HTMLInputElement>(null);
-  const [tempFilterValue, setTempFilterValue] = React.useState(filterValue);
+  const input = useRef<HTMLInputElement>(null);
+  const [tempFilterValue, setTempFilterValue] = useState(filterValue);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempFilterValue(e.target.value);
@@ -36,7 +36,7 @@ export const SortControls: React.FC<SortControlsProps> = ({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTempFilterValue(filterValue);
   }, [filterValue]);
   return (
