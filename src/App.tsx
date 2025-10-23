@@ -56,10 +56,8 @@ function App() {
   };
 
   const sortedCoins = useMemo(() => {
-    const filteredCoins = coins.filter(
-      (coin) =>
-        coin.name.toLowerCase().includes(filterValue.toLowerCase()) ||
-        coin.symbol.toLowerCase().includes(filterValue.toLowerCase())
+    const filteredCoins = coins.filter((coin) =>
+      coin.name.toLowerCase().includes(filterValue.toLowerCase())
     );
 
     return [...filteredCoins].sort((a, b) => {

@@ -62,7 +62,7 @@ export const SortControls: React.FC<SortControlsProps> = ({
           value={tempFilterValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder="Filter by name or symbol"
+          placeholder="Filter by name"
           ref={input}
           className="filter-input"
         />
