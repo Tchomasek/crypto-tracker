@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { SortDirection, SortKey } from "../types";
 import "./SortControls.css";
 
@@ -19,7 +19,6 @@ export const SortControls: React.FC<SortControlsProps> = ({
   filterValue,
   onFilterChange,
 }) => {
-  const input = useRef<HTMLInputElement>(null);
   const [tempFilterValue, setTempFilterValue] = useState(filterValue);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +62,6 @@ export const SortControls: React.FC<SortControlsProps> = ({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Filter by name"
-          ref={input}
           className="filter-input"
         />
         <button onClick={handleConfirmFilter} className="confirm-filter-btn">

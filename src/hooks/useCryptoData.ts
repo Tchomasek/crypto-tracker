@@ -42,11 +42,9 @@ export const useCryptoData = () => {
 
   const { sendMessage, readyState } = useWebSocket(FINNHUB_WS_URL, {
     onOpen: () => {
-      console.log("connected");
       setShowConnectionError(false);
     },
     onClose: () => {
-      console.log("disconnected");
       setShowConnectionError(true);
     },
     onError: (event) => {

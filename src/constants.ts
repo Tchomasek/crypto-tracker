@@ -1,7 +1,7 @@
 export const COINGECKO_API_KEY = process.env.REACT_APP_COINGECKO_API_KEY;
 export const FINNHUB_API_KEY = process.env.REACT_APP_FINNHUB_API_KEY;
 
-// uncomment to test locally, those variables would in real app come from .env file
+// uncomment to test locally, in real app those would be in .env file
 // export const COINGECKO_API_KEY = "CG-umbr6x4QcVEvKGNkXbLaADcc"
 // export const FINNHUB_API_KEY = "d3p7re1r01qt2em63hv0d3p7re1r01qt2em63hvg";
 
