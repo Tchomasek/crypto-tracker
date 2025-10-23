@@ -7,10 +7,12 @@ This is a simple crypto tracker application that displays a list of cryptocurren
 
 * Displays a list of cryptocurrencies with their rank, symbol, name, current price, and 24h % change.
 * Real-time price updates using WebSockets.
-* Sort the table by rank, symbol, name, value, and 24h % change.
+* Sort the table by rank, symbol, name, value, and 24h % change. It is possible to sort the columns by clicking on the table header or with the select above the table.
 * Filter the list of coins by name or symbol.
 * Subscribe to real-time price updates for a specific cryptocurrency.
 * Subscriptions are saved in the session storage.
+* Error state when connection to the websocket fails is displayed to the user. (Keep reloading the page to demonstrate the error state)
+
 
 ## Technologies Used
 
@@ -26,7 +28,6 @@ This is a simple crypto tracker application that displays a list of cryptocurren
 
 * Node.js
 * npm
-* Finnhub API Key
 
 ### Installing
 
@@ -38,10 +39,7 @@ git clone https://github.com/your-username/crypto-tracker.git
 ```
 npm install
 ```
-3. Create a `.env` file in the root of the project and add your Finnhub API key:
-```
-REACT_APP_FINNHUB_API_KEY=your_api_key
-```
+3. For possibility of testing the app localy, there are commented out API keys in `constants.ts`. 
 
 ### Running the application
 
