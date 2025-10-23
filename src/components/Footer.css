@@ -10,12 +10,3 @@
 .app-footer p {
   margin: 5px 0;
 }
-
-.app-footer a {
-  color: var(--accent-color);
-  text-decoration: none;
-}
-
-.app-footer a:hover {
-  text-decoration: underline;
-}
