@@ -7,6 +7,7 @@ import { ConnectionErrorBanner } from "./components/ConnectionErrorBanner";
 import { SortControls } from "./components/SortControls";
 import { CoinTable } from "./components/CoinTable";
 import Footer from "./components/Footer";
+import { ClipLoader } from "react-spinners";
 
 function App() {
   const {
@@ -126,7 +127,7 @@ function App() {
       {showConnectionError && <ConnectionErrorBanner />}
       <main>
         {isLoading ? (
-          <div>Loading...</div>
+          <ClipLoader loading={isLoading} color={"var(--primary-text-color)"} />
         ) : error ? (
           <div className="error-banner">{error}</div>
         ) : (
