@@ -61,7 +61,7 @@ tbody tr:last-child {
 
 .col-value {
   width: 150px;
-  text-align: right;
+  text-align: center;
 }
 
 td[data-label="Value"] {
@@ -150,4 +150,9 @@ button {
     color: var(--secondary-text-color);
     font-size: 0.85rem;
   }
+
+  .col-value {
+  width: auto;
+  text-align: right;
+}
 }

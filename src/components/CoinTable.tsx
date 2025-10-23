@@ -1,6 +1,7 @@
 import React from "react";
 import { Coin, SortDirection, SortKey } from "../types";
 import { getFinnhubSymbol } from "../constants";
+import { SortableHeader } from "./SortableHeader";
 
 import "./CoinTable.css";
 interface CoinTableProps {
@@ -28,84 +29,49 @@ export const CoinTable: React.FC<CoinTableProps> = ({
       <table>
         <thead>
           <tr>
-            <th
-              className="sortable-header"
-              onClick={() => onHeaderClick("market_cap_rank")}
-            >
-              Rank
-              <span
-                className="sort-arrow"
-                style={{
-                  visibility: sortKey === "market_cap_rank" ? "visible" : "hidden",
-                }}
-              >
-                {sortDirection === "asc" ? "↑" : "↓"}
-              </span>
-            </th>
+            <SortableHeader
+              title="Rank"
+              sortKey="market_cap_rank"
+              currentSortKey={sortKey}
+              sortDirection={sortDirection}
+              onHeaderClick={onHeaderClick}
+            />
             <th></th>
-            <th
-              className="sortable-header"
-              onClick={() => onHeaderClick("symbol")}
-            >
-              Symbol
-              <span
-                className="sort-arrow"
-                style={{ visibility: sortKey === "symbol" ? "visible" : "hidden" }}
-              >
-                {sortDirection === "asc" ? "↑" : "↓"}
-              </span>
-            </th>
-            <th
-              className="sortable-header"
-              onClick={() => onHeaderClick("name")}
-            >
-              Name
-              <span
-                className="sort-arrow"
-                style={{ visibility: sortKey === "name" ? "visible" : "hidden" }}
-              >
-                {sortDirection === "asc" ? "↑" : "↓"}
-              </span>
-            </th>
-            <th
-              className="col-value sortable-header"
-              onClick={() => onHeaderClick("current_price")}
-            >
-              Value
-              <span
-                className="sort-arrow"
-                style={{ visibility: sortKey === "current_price" ? "visible" : "hidden" }}
-              >
-                {sortDirection === "asc" ? "↑" : "↓"}
-              </span>
-            </th>
-            <th
-              className="sortable-header"
-              onClick={() => onHeaderClick("price_change_percentage_24h")}
-            >
-              24h % Change
-              <span
-                className="sort-arrow"
-                style={{
-                  visibility:
-                    sortKey === "price_change_percentage_24h" ? "visible" : "hidden",
-                }}
-              >
-                {sortDirection === "asc" ? "↑" : "↓"}
-              </span>
-            </th>
-            <th
-              className="sortable-header"
-              onClick={() => onHeaderClick("subscription")}
-            >
-              Actions
-              <span
-                className="sort-arrow"
-                style={{ visibility: sortKey === "subscription" ? "visible" : "hidden" }}
-              >
-                {sortDirection === "asc" ? "↑" : "↓"}
-              </span>
-            </th>
+            <SortableHeader
+              title="Symbol"
+              sortKey="symbol"
+              currentSortKey={sortKey}
+              sortDirection={sortDirection}
+              onHeaderClick={onHeaderClick}
+            />
+            <SortableHeader
+              title="Name"
+              sortKey="name"
+              currentSortKey={sortKey}
+              sortDirection={sortDirection}
+              onHeaderClick={onHeaderClick}
+            />
+            <SortableHeader
+              title="Value"
+              sortKey="current_price"
+              currentSortKey={sortKey}
+              sortDirection={sortDirection}
+              onHeaderClick={onHeaderClick}
+            />
+            <SortableHeader
+              title="24h % Change"
+              sortKey="price_change_percentage_24h"
+              currentSortKey={sortKey}
+              sortDirection={sortDirection}
+              onHeaderClick={onHeaderClick}
+            />
+            <SortableHeader
+              title="Actions"
+              sortKey="subscription"
+              currentSortKey={sortKey}
+              sortDirection={sortDirection}
+              onHeaderClick={onHeaderClick}
+            />
           </tr>
         </thead>
         <tbody>
