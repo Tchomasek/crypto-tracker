@@ -97,9 +97,16 @@ export const useCryptoData = () => {
       try {
         const response = await fetch(COINGECKO_API_URL);
         const data: Coin[] = await response.json();
-        setCoins(data);
+        const sortedData = [...data].sort(
+          (a, b) => b.current_price - a.current_price
+        );
+        const rankedData = sortedData.map((coin, index) => ({
+          ...coin,
+          market_cap_rank: index + 1,
+        }));
+        setCoins(rankedData);
         if (subscribedSymbolsRef.current.length === 0) {
-          const topSymbols = data
+          const topSymbols = rankedData
             .slice(0, MAX_SUBSCRIPTIONS)
             .map((coin) => getFinnhubSymbol(coin.symbol));
           setSubscribedSymbols(topSymbols);
