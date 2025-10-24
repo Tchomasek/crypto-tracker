@@ -39,7 +39,7 @@ git clone https://github.com/your-username/crypto-tracker.git
 ```
 npm install
 ```
-3. To test the app locally, uncomment the API keys in `constants.ts`. These keys are necessary to connect to the APIs and are provided for your convenience (in production, they should be stored in a .env file).
+3. To test the app locally, uncomment the API keys in `constants.ts`. These keys are necessary to connect to the APIs and are provided for your convenience (in production, they would be stored in a .env file).
 
 ### Running the application
 
