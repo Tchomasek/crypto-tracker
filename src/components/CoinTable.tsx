@@ -104,7 +104,7 @@ export const CoinTable: React.FC<CoinTableProps> = ({
                       : "var(--price-down)",
                 }}
               >
-                {coin.price_change_percentage_24h.toFixed(2)}%
+                {coin.price_change_percentage_24h?.toFixed(2)}%
               </td>
               <td data-label="Actions">
                 <button
